@@ -9,7 +9,7 @@ db_config = {
 }
 
 connection_pool = pooling.MySQLConnectionPool(
-    pool_name="feetmanage",
+    pool_name="feetmanag",
     pool_size=5,
     **db_config
 )
