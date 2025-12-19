@@ -36,7 +36,7 @@ async def show_all(file: UploadFile = File(...), db = Depends(get_db())
            distance = int(row["Trip_Distance"])
            if id not in vehicle:
             continue
-           cleaned_data.append((id,driver,date.today().data,distance))           
+           cleaned_data.append((id,driver,date,data,distance))           
         except (ValueError, KeyError) as e:
             dirty_data.append({
                 "VehcileID": row.get("VehcileID", "N/A"),
