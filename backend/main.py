@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from config.database import get_db
 from fastapi.middleware.cors import CORSMiddleware
+from services import availableveh
 app = FastAPI()
 
 app.add_middleware(
