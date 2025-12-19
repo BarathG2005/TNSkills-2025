@@ -36,7 +36,7 @@ async def show_all(file: UploadFile = File(...), db = Depends(get_db())
            distance = int(row["Trip_Distance"])
            if id not in vehicle:
             continue
-           cleaned_data.append((id,driver,data,odmeter,distance))           
+           cleaned_data.append((id,driver,date.today().data,distance))           
         except (ValueError, KeyError) as e:
             dirty_data.append({
                 "VehcileID": row.get("VehcileID", "N/A"),
@@ -52,6 +52,30 @@ async def show_all(file: UploadFile = File(...), db = Depends(get_db())
                 "dirty_data": dirty_data,
                 "message": "No valid rows found to insert"
             }
-        cursor = get_db.cursor()
-        sql = "INSERT INTO Trips (order_id, order_date, price) VALUES (%s, %s, %s)"
-        
+        cursor = db.cursor()
+        sql = "INSERT INTO Trips (TripID, VehicleID,  DriverName,StartDate,EndDate,DistanceKm) VALUES (%s, %s, %s)"
+        try:
+            cursor.excutemany(sql,cleaned_data)
+            db.commit()
+            inserted_count = cursor.rowcount
+            inserted_data = [
+            {
+                "order_id": row[0],
+                "order_date": str(row[1]),
+                "price": row[2]
+            }
+            for row in cleaned_data
+            ]
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(status_code=500, detail=f"Database Insert Failed: {str(e)}")
+        finally:
+            cursor.close()
+            db.close()
+
+        return {
+            "inserted_data": inserted_data,
+            "dirty_data": dirty_data,
+            "inserted_count": inserted_count,
+            "dirty_count": len(dirty_data)
+        }
