@@ -27,7 +27,6 @@ create table  Service_History(
 	ServiceDat date,
     OdometerReading long,
     Notes varchar(200),
-    
     constraint ser_fk
     foreign key  Vehicles(VehicleID)
     references  Vehicles(VehicleID)
@@ -38,7 +37,6 @@ create table  Maintenance_Alerts(
 	VehicleID int ,
 	AlertDate date,
     Reason varchar(500),
-    
     constraint m_fk
     foreign key  Vehicles(VehicleID)
     references  Vehicles(VehicleID)
