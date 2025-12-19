@@ -8,7 +8,7 @@ create table Vehicles(
 );
 
 create table Trips(
-	TripID int primary key,
+	TripID int primary key ,
 	VehicleID int ,
     DriverName varchar(200),
     StartDate date,
