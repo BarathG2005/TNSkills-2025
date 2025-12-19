@@ -5,7 +5,7 @@ export default function Home() {
   const [data,setData] = useState();
   useEffect(()=>{
     const fetch =async()=> {
-      const res = await fetch("https://localhost:8080",{
+      const res = await fetch("https://localhost:8080/available",{
         methods:"GET",
         headers:{
           "content-Type":"application/json",

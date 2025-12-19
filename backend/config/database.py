@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import pooling
+from functools import lru_cache
 
 db_config = {
     "host": "localhost",
@@ -7,12 +8,13 @@ db_config = {
     "password": "123",
     "database": "tnskills"
 }
-
-connection_pool = pooling.MySQLConnectionPool(
+@lrc_cache
+def get_pool():
+    return  pooling.MySQLConnectionPool(
     pool_name="feetmanag",
     pool_size=5,
     **db_config
-)
+    )
 
 def get_db():
-    return connection_pool.get_connection()
+    return get_pool().get_connection()

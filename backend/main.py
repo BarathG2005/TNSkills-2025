@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from config.database import get_db
 from fastapi.middleware.cors import CORSMiddleware
-from services import availableveh
-app = FastAPI()
+from services import availableVehicle
+from config.database import get_db
+from api import dataclean
+app = FastAPI(title="Fleet Management solutions")
 
 app.add_middleware(
     CORSMiddleware,
@@ -12,6 +14,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(availableVehicle)
+app.include_router(dataclean)
+
 @app.get("/")
 def root():
     return {

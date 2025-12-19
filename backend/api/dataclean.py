@@ -1,11 +1,12 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
+from fastapi import FastAPI, UploadFile, File, HTTPException, Depends ,APIRouter
 from config.database import get_db
 import csv
 from datetime import datetime, date
 from typing import List, Dict, Any
 import io
 from config.database import get_db
-
+from threading import Lock
+router = APIRouter()
 
 vehicle ={1,2,1,3,2,1,}
 
@@ -28,15 +29,21 @@ async def show_all(file: UploadFile = File(...), db = Depends(get_db())
     dirty_data = []
     
     for row in reader:
+        d = False
         try:
-           id  = int(row["VehcileID"])
-           driver = row["Driver"]
-           date = datetime.strptime(row["Date"].strip(), "%Y-%m-%d").date()
-           odmeter = int(row["Odometer_Reading"])
-           distance = int(row["Trip_Distance"])
-           if id not in vehicle:
-            continue
-           cleaned_data.append((id,driver,date,data,distance))           
+            id  = int(row["VehcileID"])
+            driver = row["Driver"]
+            date = datetime.strptime(row["Date"].strip(), "%Y-%m-%d").date()
+            odmeter = int(row["Odometer_Reading"])
+            distance = int(row["Trip_Distance"])
+            if id not in vehicle:
+                d = True
+            elif not driver:
+                d = True
+            elif distance == 0:
+                d = True
+            else:
+                cleaned_data.append((id,driver,date,data,distance))           
         except (ValueError, KeyError) as e:
             dirty_data.append({
                 "VehcileID": row.get("VehcileID", "N/A"),
